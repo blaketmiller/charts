@@ -1,0 +1,82 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ template "flood.fullname" . }}
+  labels:
+    app: {{ template "flood.name" . }}
+    chart: {{ template "flood.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "flood.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "flood.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: flood
+          image: "{{ .Values.image.flood.repository }}:{{ .Values.image.flood.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 3000
+              protocol: TCP
+          # livenessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: http
+          # readinessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: http
+          resources:
+{{ toYaml .Values.resources.flood | indent 12 }}
+        - name: rtorrent
+          image: "{{ .Values.image.rtorrent.repository }}:{{ .Values.image.rtorrent.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          tty: true
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          # livenessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: http
+          # readinessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: http
+          resources:
+{{ toYaml .Values.resources.rtorrent | indent 12 }}
+{{- if .Values.nfs.enabled }}
+          volumeMounts:
+          - name: rtorrent
+            mountPath: /home/rtorrent/library
+            subPath: library
+          - name: rtorrent
+            mountPath: /home/rtorrent/watch
+            subPath: watch
+      volumes:
+      - name: rtorrent
+        persistentVolumeClaim:
+          claimName: nfs-rtorrent
+{{- end }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
