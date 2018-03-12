@@ -1,13 +1,23 @@
 apiVersion: v1
 entries:
+  fever:
+  - apiVersion: v1
+    appVersion: "1.0"
+    created: 2018-03-11T17:47:22.682609-07:00
+    description: A Helm chart for Fever RSS reader
+    digest: fe1b97ac0ea2a7d6472dd93cf3f2366b9c5b554e3f85d3af8f2d08752e9a9f1b
+    name: fever
+    urls:
+    - http://charts.btmiller.net/fever-0.1.0.tgz
+    version: 0.1.0
   flood:
   - apiVersion: v1
     appVersion: "1.0"
-    created: 2018-03-10T21:15:23.574418-08:00
+    created: 2018-03-11T17:47:22.682863-07:00
     description: A Helm chart for flood+rtorrent
     digest: 7b9e691b160f6f7183c93fff9ad92396c6e97d73640f5188a1adbb450f2afc0f
     name: flood
     urls:
-    - https://btmiller.com/charts/flood-0.1.1.tgz
+    - http://charts.btmiller.net/flood-0.1.1.tgz
     version: 0.1.1
-generated: 2018-03-10T21:15:23.573925-08:00
+generated: 2018-03-11T17:47:22.681888-07:00

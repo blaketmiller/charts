@@ -1,0 +1,19 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: fever-feed-refresher
+spec:
+  schedule: "*/5 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: fever-feed-refresher
+            image: tutum/curl:alpine
+            args:
+            - /usr/bin/curl
+            - -L
+            - -A 'Fever Refresh Cron'
+            - 'https://fever.btmiller.net/?refresh'
+          restartPolicy: OnFailure
